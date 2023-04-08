@@ -27,19 +27,10 @@ async fn main() {
     // simple thread that reads from the stream
     tokio::spawn(async move {
         loop {
-            println!("{}: Running loop", get_now_formatted());
-            // wait for a change in either stream
-            tokio::select! {
-                //timeout
-                _ = tokio::time::sleep(tokio::time::Duration::from_millis(500)) => {
-                    println!("{}: waiting..", get_now_formatted());
-                },
-                //
-                _ = rx.changed() => {
-                    println!("NEVER REACHES HERE UNLESS WE COMMENT OUT AWAIT LINE IN SENDER");
-                    println!("{}: Received: {:?}", get_now_formatted(), rx.borrow().clone());
-                },
-            }
+            println!("{}: Trying to read..", get_now_formatted());
+            rx.changed().await.expect("TODO: panic message");
+            println!("NEVER REACHES HERE UNLESS WE COMMENT OUT AWAIT LINE IN SENDER");
+            println!("{}: Received: {:?}", get_now_formatted(), rx.borrow().clone());
         }
     });
 
@@ -89,9 +80,8 @@ pub async fn subscribe_orderbook() -> Receiver<i32> {
 
                 Ok(())
             });
-
-            web_socket.connect_multiple_streams(&vec!["BTCUSDT@depth@100ms".to_string()]).unwrap(); // check error
-
+            web_socket.connect_multiple_streams(&vec!["btcbusd@depth@100ms".to_string()]).unwrap(); // check error
+            println!("Connected to websocket");
             if let Err(e) = web_socket.event_loop(&keep_running) {
                 println!("Error: {:?}", e);
             }
