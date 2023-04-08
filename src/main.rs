@@ -1,17 +1,6 @@
-use std::cmp::max;
-use std::collections::HashMap;
-use std::env;
+use std::thread;
 use chrono::Utc;
-use binance::api::Binance;
-use binance::market::Market;
-use binance::websockets::*;
-use std::sync::atomic::{AtomicBool};
 use tokio::sync::watch::Receiver;
-use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
-use std::{thread};
-use std::sync::atomic::Ordering;
-use binance::model::{DepthOrderBookEvent};
 use std::time::Duration;
 use tokio::sync::watch;
 use tokio::time::sleep;
@@ -29,7 +18,7 @@ async fn main() {
         loop {
             println!("{}: Trying to read..", get_now_formatted());
             rx.changed().await.expect("TODO: panic message");
-            println!("NEVER REACHES HERE UNLESS WE COMMENT OUT LINE 60 WHERE WE AWAIT IN SENDER");
+            println!("NEVER REACHES HERE UNLESS WE COMMENT OUT AWAIT LINE IN SENDER");
             println!("{}: Received: {:?}", get_now_formatted(), rx.borrow().clone());
         }
     });
@@ -40,7 +29,6 @@ async fn main() {
 }
 
 pub async fn subscribe_orderbook() -> Receiver<i32> {
-    let keep_running = AtomicBool::new(true);
     // this is where the issue will happen:
     let (channel_tx, channel_rx) = watch::channel(1);
 
