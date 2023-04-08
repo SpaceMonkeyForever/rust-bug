@@ -1,0 +1,13 @@
+[package]
+name = "rust-sucks"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures = "0.3.21"
+tokio = {version= "1.27.0", features=["rt-multi-thread", "sync", "time", "macros"]}
+chrono = "0.4.19"
+binance = { git = "https://github.com/SpaceMonkeyForever/binance-rs.git" }
+crossbeam = "0.8.2"
